@@ -41,9 +41,14 @@ def main(args: Array[String]) {
    * the factory methods implemented in Vectors to create local vectors.
    */
 
+// DenseVector(values: Array[Double])
+
   // Create a dense vector (1.0, 0.0, 3.0).
   val dv: Vector = Vectors.dense(1.0, 0.0, 3.0)
   println(dv)
+
+//  SparseVector(size: Int, indices: Array[Int], values: Array[Double])
+
   // Create a sparse vector (1.0, 0.0, 3.0) by specifying its indices and values corresponding to nonzero entries.
   val sv1: Vector = Vectors.sparse(3, Array(0, 2), Array(1.0, 3.0))
   println(sv1)
