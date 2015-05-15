@@ -214,8 +214,8 @@ def main(args: Array[String]) {
    * compute its column summary statistics.
    */
 
-  val rows: RDD[Vector] = sc.parallelize(Array(0.0,1.0,2.0)
-  .map {case (i) => DenseVector(i)} )
+  val rows: RDD[Vector] = sc.parallelize(Seq(0.0,1.0,2.0)
+  .map {i => Vectors.dense(i) } )
 
   // Create a RowMatrix from an RDD[Vector].
   val mat: RowMatrix = new RowMatrix(rows)
@@ -224,10 +224,6 @@ def main(args: Array[String]) {
   val m = mat.numRows()
   val n = mat.numCols()
   println(m,n)
-
-
-
-
 
   sc.stop()
   }
