@@ -1,3 +1,4 @@
+import org.apache.spark.mllib.linalg.distributed.{BlockMatrix, CoordinateMatrix, MatrixEntry}
 import org.apache.spark.mllib.linalg.{Matrices, Matrix, Vector, Vectors}
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.util.MLUtils
@@ -108,11 +109,95 @@ def main(args: Array[String]) {
    * entry values are stored in a single double array in column major.
    */
 
-//  DenseMatrix(numRows: Int, numCols: Int, values: Array[Double])
+  //  DenseMatrix(numRows: Int, numCols: Int, values: Array[Double])
 
   // Create a dense matrix ((1.0, 2.0), (3.0, 4.0), (5.0, 6.0))
   val dm: Matrix = Matrices.dense(3, 2, Array(1.0, 3.0, 5.0, 2.0, 4.0, 6.0))
   println(dm)
+
+  //  4. Distributed Matrix
+
+  /**
+   * A distributed matrix has long-typed row and column indices and
+   * double-typed values, stored distributively in one or more RDDs.
+   * It is very important to choose the right format to store large
+   * and distributed matrices. Converting a distributed matrix to a
+   * different format may require a global shuffle, which is quite
+   * expensive. Three types of distributed matrices have been implemented
+   * so far.
+   */
+
+  /**
+   * The basic type is called RowMatrix. A RowMatrix is a row-oriented
+   * distributed matrix without meaningful row indices, e.g., a collection
+   * of feature vectors. It is backed by an RDD of its rows, where each
+   * row is a local vector. We assume that the number of columns is not
+   * huge for a RowMatrix so that a single local vector can be reasonably
+   * communicated to the driver and can also be stored / operated on using
+   * a single node. An IndexedRowMatrix is similar to a RowMatrix but with
+   * row indices, which can be used for identifying rows and executing
+   * joins. A CoordinateMatrix is a distributed matrix stored in coordinate
+   * list (COO) format, backed by an RDD of its entries.
+   */
+
+  /**
+   * COO stores a list of (row, column, value) tuples. Ideally,
+   * the entries are sorted (by row index, then column index) to
+   * improve random access times. This is another format which is good
+   * for incremental matrix construction.
+   */
+
+  /**
+   * Note: The underlying RDDs of a distributed matrix must be
+   * deterministic, because we cache the matrix size. In general the
+   * use of non-deterministic RDDs can lead to errors.
+   */
+
+  //  5. Block Matrix
+
+  /**
+   * A BlockMatrix is a distributed matrix backed by an RDD of
+   * MatrixBlocks, where a MatrixBlock is a tuple of ((Int, Int), Matrix),
+   * where the (Int, Int) is the index of the block, and Matrix is the
+   * sub-matrix at the given index with size rowsPerBlock x colsPerBlock.
+   * BlockMatrix supports methods such as add and multiply with another
+   * BlockMatrix. BlockMatrix also has a helper function validate which
+   * can be used to check whether the BlockMatrix is set up properly.
+   */
+
+  /**
+   * A BlockMatrix can be most easily created from an IndexedRowMatrix or
+   * CoordinateMatrix by calling toBlockMatrix. toBlockMatrix creates
+   * blocks of size 1024 x 1024 by default. Users may change the block
+   * size by supplying the values through toBlockMatrix(rowsPerBlock,
+   * colsPerBlock).
+   */
+
+  val entries: RDD[MatrixEntry] = sc.parallelize(Seq(
+    (0, 0, 1.0),
+    (0, 1, 2.0),
+    (1, 1, 3.0),
+    (1, 2, 4.0),
+    (2, 2, 5.0),
+    (2, 3, 6.0),
+    (3, 0, 7.0),
+    (3, 3, 8.0),
+    (4, 1, 9.0))
+    .map { case (i, j, value) => MatrixEntry(i, j, value) })
+
+  // Create a CoordinateMatrix from an RDD[MatrixEntry].
+  val coordMat: CoordinateMatrix = new CoordinateMatrix(entries)
+
+  // Transform the CoordinateMatrix to a BlockMatrix
+  val matA: BlockMatrix = coordMat.toBlockMatrix().cache()
+
+  // Validate whether the BlockMatrix is set up properly. Throws an Exception when it is not valid.
+  // Nothing happens if it is valid.
+  matA.validate()
+
+  // Calculate A^T A.
+  val ata = matA.transpose.multiply(matA)
+  println(ata)
 
   sc.stop()
   }
