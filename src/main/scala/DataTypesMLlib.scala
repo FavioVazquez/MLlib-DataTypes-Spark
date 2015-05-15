@@ -1,4 +1,4 @@
-import org.apache.spark.mllib.linalg.{Vector, Vectors}
+import org.apache.spark.mllib.linalg.{Matrices, Matrix, Vector, Vectors}
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.rdd.RDD
@@ -107,8 +107,12 @@ def main(args: Array[String]) {
    * entry values are stored in a single double array in column major.
    */
 
-  
+//  DenseMatrix(numRows: Int, numCols: Int, values: Array[Double])
 
+  // Create a dense matrix ((1.0, 2.0), (3.0, 4.0), (5.0, 6.0))
+  val dm: Matrix = Matrices.dense(3, 2, Array(1.0, 3.0, 5.0, 2.0, 4.0, 6.0))
+  println(dm)
+  
   sc.stop()
   }
 }
