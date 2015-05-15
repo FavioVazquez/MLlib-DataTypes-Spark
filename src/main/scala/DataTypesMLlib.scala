@@ -3,8 +3,6 @@ import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkContext, SparkConf}
-import org.apache.log4j.Logger
-import org.apache.log4j.Level
 
 /**
  * Created by Favio on 15/05/15.
@@ -12,8 +10,6 @@ import org.apache.log4j.Level
 
 object DataTypesMLlib {
 def main(args: Array[String]) {
-  Logger.getLogger("org").setLevel(Level.WARN)
-  Logger.getLogger("akka").setLevel(Level.OFF)
 
   val conf = new SparkConf()
     //      .setMaster("local")
