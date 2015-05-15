@@ -13,8 +13,8 @@ object DataTypesMLlib {
 def main(args: Array[String]) {
 
   val conf = new SparkConf()
-    //      .setMaster("local")
-    .setMaster("mesos://master.mcbo.mood.com.ve:5050")
+          .setMaster("local")
+//    .setMaster("mesos://master.mcbo.mood.com.ve:5050")
     .setAppName("Data Types MLlib")
     .set("spark.executor.memory", "6g")
   val sc = new SparkContext(conf)
@@ -99,8 +99,7 @@ def main(args: Array[String]) {
   //  MLUtils.loadLibSVMFile reads training examples stored in LIBSVM format.
 
   val examples: RDD[LabeledPoint] = MLUtils.loadLibSVMFile(sc, "/opt/spark/data/mllib/sample_libsvm_data.txt")
-  println(examples)
-
+  examples.foreach(println)
   //  3. Local Matrix
 
   /**
@@ -196,8 +195,9 @@ def main(args: Array[String]) {
   matA.validate()
 
   // Calculate A^T A.
-  val ata = matA.transpose.multiply(matA)
-  println(ata)
+  val ata = matA.transpose
+  println(ata.toLocalMatrix())
+
 
   sc.stop()
   }
