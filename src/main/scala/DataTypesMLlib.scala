@@ -1,5 +1,5 @@
 import breeze.linalg.DenseVector
-import org.apache.spark.mllib.linalg.distributed.{RowMatrix, BlockMatrix, CoordinateMatrix, MatrixEntry}
+import org.apache.spark.mllib.linalg.distributed._
 import org.apache.spark.mllib.linalg.{Matrices, Matrix, Vector, Vectors}
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.util.MLUtils
@@ -14,8 +14,8 @@ object DataTypesMLlib {
 def main(args: Array[String]) {
 
   val conf = new SparkConf()
-          .setMaster("local")
-//    .setMaster("mesos://master.mcbo.mood.com.ve:5050")
+//          .setMaster("local")
+    .setMaster("mesos://master.mcbo.mood.com.ve:5050")
     .setAppName("Data Types MLlib")
     .set("spark.executor.memory", "6g")
   val sc = new SparkContext(conf)
@@ -201,29 +201,46 @@ def main(args: Array[String]) {
 
 //  6. RowMatrix
 
+//  /**
+//   * A RowMatrix is a row-oriented distributed matrix without meaningful
+//   * row indices, backed by an RDD of its rows, where each row is a local
+//   * vector. Since each row is represented by a local vector, the number of
+//   * columns is limited by the integer range but it should be much smaller
+//   * in practice.
+//   */
+//
+//  /**
+//   * A RowMatrix can be created from an RDD[Vector] instance. Then we can
+//   * compute its column summary statistics.
+//   */
+//
+//  val rows: RDD[Vector] = sc.parallelize(Seq(0.0,1.0,2.0)
+//  .map {i => Vectors.dense(i) } )
+//
+//  // Create a RowMatrix from an RDD[Vector].
+//  val mat: RowMatrix = new RowMatrix(rows)
+//
+//  // Get its size.
+//  val m = mat.numRows()
+//  val n = mat.numCols()
+//  println(m,n)
+
+//  7. IndexedRowMatrix
+
   /**
-   * A RowMatrix is a row-oriented distributed matrix without meaningful
-   * row indices, backed by an RDD of its rows, where each row is a local
-   * vector. Since each row is represented by a local vector, the number of
-   * columns is limited by the integer range but it should be much smaller
-   * in practice.
+   * An IndexedRowMatrix is similar to a RowMatrix but with meaningful
+   * row indices. It is backed by an RDD of indexed rows, so that each
+   * row is represented by its index (long-typed) and a local vector.
    */
 
   /**
-   * A RowMatrix can be created from an RDD[Vector] instance. Then we can
-   * compute its column summary statistics.
+   * An IndexedRowMatrix can be created from an RDD[IndexedRow] instance,
+   * where IndexedRow is a wrapper over (Long, Vector). An IndexedRowMatrix
+   * can be converted to a RowMatrix by dropping its row indices.
    */
 
-  val rows: RDD[Vector] = sc.parallelize(Seq(0.0,1.0,2.0)
-  .map {i => Vectors.dense(i) } )
+//TODO: FINISH  val rows1: RDD[IndexedRow] = sc.parallelize(Seq(1, Vectors.dense(1,2,3))
 
-  // Create a RowMatrix from an RDD[Vector].
-  val mat: RowMatrix = new RowMatrix(rows)
-
-  // Get its size.
-  val m = mat.numRows()
-  val n = mat.numCols()
-  println(m,n)
 
   sc.stop()
   }
