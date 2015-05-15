@@ -1,4 +1,5 @@
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
+import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
@@ -55,6 +56,30 @@ def main(args: Array[String]) {
   // Create a sparse vector (1.0, 0.0, 3.0) by specifying its nonzero entries.
   val sv2: Vector = Vectors.sparse(3, Seq((0, 1.0), (2, 3.0)))
   println(sv2)
+
+
+
+//  2. Labeled Point
+
+  /**
+   * A labeled point is a local vector, either dense or sparse, associated
+   * with a label/response. In MLlib, labeled points are used in supervised
+   * learning algorithms. We use a double to store a label, so we can use
+   * labeled points in both regression and classification. For binary
+   * classification, a label should be either 0 (negative) or 1 (positive).
+   * For multiclass classification, labels should be class indices starting
+   * from zero: 0, 1, 2, ....
+   */
+
+//  LabeledPoint(label: Double, features: Vector)
+
+  // Create a labeled point with a positive label and a dense feature vector.
+  val pos = LabeledPoint(1.0, Vectors.dense(1.0, 0.0, 3.0))
+  println(pos)
+
+  // Create a labeled point with a negative label and a sparse feature vector.
+  val neg = LabeledPoint(0.0, Vectors.sparse(3, Array(0, 2), Array(1.0, 3.0)))
+  println(neg)
 
   sc.stop()
   }
