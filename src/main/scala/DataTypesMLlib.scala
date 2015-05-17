@@ -14,7 +14,7 @@ object DataTypesMLlib {
 def main(args: Array[String]) {
 
   val conf = new SparkConf()
-//          .setMaster("local")
+//  .setMaster("local")
     .setMaster("mesos://master.mcbo.mood.com.ve:5050")
     .setAppName("Data Types MLlib")
     .set("spark.executor.memory", "6g")
