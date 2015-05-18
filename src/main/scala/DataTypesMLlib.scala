@@ -240,8 +240,17 @@ def main(args: Array[String]) {
    */
    
 //TODO: Finish section
-val rows1: RDD[IndexedRow] = sc.parallelize(Seq(1, Vectors.dense(1,2,3))
+  val rows1: RDD[IndexedRow] = sc.parallelize(Seq((1,Vectors.dense(0.0,1.0,2.0)))
+    .map {case (a,b) => IndexedRow(a,b)})
 
+  val mat1: IndexedRowMatrix = new IndexedRowMatrix(rows1)
+
+  //Gets its size
+  val m1 = mat1.numRows()
+  val n1 = mat1.numCols()
+
+  //Drop its row indices
+  val rowMat: RowMatrix = mat1.toRowMatrix()
 
   sc.stop()
   }
