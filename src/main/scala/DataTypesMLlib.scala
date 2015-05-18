@@ -244,7 +244,7 @@ def main(args: Array[String]) {
     .map {case (a,b) => IndexedRow(a,b)})
 
   val mat1: IndexedRowMatrix = new IndexedRowMatrix(rows1)
-  println(mat1)
+  println(mat1.toBlockMatrix().toLocalMatrix())
 
   //Gets its size
   val m1 = mat1.numRows()
@@ -254,7 +254,6 @@ def main(args: Array[String]) {
 
   //Drop its row indices
   val rowMat: RowMatrix = mat1.toRowMatrix()
-  println(rowMat)
 
 
   sc.stop()
