@@ -227,34 +227,75 @@ def main(args: Array[String]) {
 
 //  7. IndexedRowMatrix
 
+//  /**
+//   * An IndexedRowMatrix is similar to a RowMatrix but with meaningful
+//   * row indices. It is backed by an RDD of indexed rows, so that each
+//   * row is represented by its index (long-typed) and a local vector.
+//   */
+//
+//  /**
+//   * An IndexedRowMatrix can be created from an RDD[IndexedRow] instance,
+//   * where IndexedRow is a wrapper over (Long, Vector). An IndexedRowMatrix
+//   * can be converted to a RowMatrix by dropping its row indices.
+//   */
+//
+//  val rows1: RDD[IndexedRow] = sc.parallelize(Seq((1,Vectors.dense(0.0,1.0,2.0)))
+//    .map {case (a,b) => IndexedRow(a,b)})
+//
+//  val mat1: IndexedRowMatrix = new IndexedRowMatrix(rows1)
+//  println(mat1.toBlockMatrix().toLocalMatrix())
+//
+//  //Gets its size
+//  val m1 = mat1.numRows()
+//  println(m1)
+//  val n1 = mat1.numCols()
+//  println(n1)
+//
+//  //Drop its row indices
+//  val rowMat: RowMatrix = mat1.toRowMatrix()
+
+//  8. Coordinate Matrix
+
   /**
-   * An IndexedRowMatrix is similar to a RowMatrix but with meaningful
-   * row indices. It is backed by an RDD of indexed rows, so that each
-   * row is represented by its index (long-typed) and a local vector.
+   * A CoordinateMatrix is a distributed matrix backed by an RDD of its
+   * entries. Each entry is a tuple of (i: Long, j: Long, value: Double),
+   * where i is the row index, j is the column index, and value is the
+   * entry value. A CoordinateMatrix should be used only when both dimensions
+   * of the matrix are huge and the matrix is very sparse.
    */
 
   /**
-   * An IndexedRowMatrix can be created from an RDD[IndexedRow] instance,
-   * where IndexedRow is a wrapper over (Long, Vector). An IndexedRowMatrix
-   * can be converted to a RowMatrix by dropping its row indices.
+   * A CoordinateMatrix can be created from an RDD[MatrixEntry] instance,
+   * where MatrixEntry is a wrapper over (Long, Long, Double). A
+   * CoordinateMatrix can be converted to an IndexedRowMatrix with
+   * sparse rows by calling toIndexedRowMatrix. Other computations for
+   * CoordinateMatrix are not currently supported.
    */
-   
-  val rows1: RDD[IndexedRow] = sc.parallelize(Seq((1,Vectors.dense(0.0,1.0,2.0)))
-    .map {case (a,b) => IndexedRow(a,b)})
 
-  val mat1: IndexedRowMatrix = new IndexedRowMatrix(rows1)
-  println(mat1.toBlockMatrix().toLocalMatrix())
+  val entries1: RDD[MatrixEntry] = sc.parallelize(Seq(
+    (0, 0, 0.0),
+    (0, 1, 2.0),
+    (1, 1, 0.0),
+    (1, 2, 4.0),
+    (2, 2, 0.0),
+    (2, 3, 6.0),
+    (3, 0, 0.0),
+    (3, 3, 8.0),
+    (4, 1, 9.0))
+    .map { case (i, j, value) => MatrixEntry(i, j, value) })
 
-  //Gets its size
-  val m1 = mat1.numRows()
-  println(m1)
-  val n1 = mat1.numCols()
-  println(n1)
+  val mat2: CoordinateMatrix = new CoordinateMatrix(entries1)
 
-  //Drop its row indices
-  val rowMat: RowMatrix = mat1.toRowMatrix()
+  //Get its size
+  val m2 = mat2.numRows
+  println(m2)
+  val n2 = mat2.numCols
+  println(n2)
 
-
+  //Convert it to an IndexRowMatrix whose rows are sparse vectors
+  val indexedRowMatrix = mat2.toIndexedRowMatrix()
+  println(indexedRowMatrix.toBlockMatrix.toLocalMatrix)
   sc.stop()
+
   }
 }
