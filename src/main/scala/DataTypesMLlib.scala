@@ -244,13 +244,18 @@ def main(args: Array[String]) {
     .map {case (a,b) => IndexedRow(a,b)})
 
   val mat1: IndexedRowMatrix = new IndexedRowMatrix(rows1)
+  println(mat1)
 
   //Gets its size
   val m1 = mat1.numRows()
+  println(m1)
   val n1 = mat1.numCols()
+  println(n1)
 
   //Drop its row indices
   val rowMat: RowMatrix = mat1.toRowMatrix()
+  println(rowMat)
+
 
   sc.stop()
   }
