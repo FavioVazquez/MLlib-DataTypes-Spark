@@ -238,8 +238,9 @@ def main(args: Array[String]) {
    * where IndexedRow is a wrapper over (Long, Vector). An IndexedRowMatrix
    * can be converted to a RowMatrix by dropping its row indices.
    */
-
-//TODO: FINISH  val rows1: RDD[IndexedRow] = sc.parallelize(Seq(1, Vectors.dense(1,2,3))
+   
+//TODO: Finish section
+val rows1: RDD[IndexedRow] = sc.parallelize(Seq(1, Vectors.dense(1,2,3))
 
 
   sc.stop()
