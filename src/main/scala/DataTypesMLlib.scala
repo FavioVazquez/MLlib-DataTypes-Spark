@@ -287,14 +287,14 @@ def main(args: Array[String]) {
   val mat2: CoordinateMatrix = new CoordinateMatrix(entries1)
 
   //Get its size
-  val m2 = mat2.numRows
+  val m2 = mat2.numRows()
   println(m2)
-  val n2 = mat2.numCols
+  val n2 = mat2.numCols()
   println(n2)
 
   //Convert it to an IndexRowMatrix whose rows are sparse vectors
   val indexedRowMatrix = mat2.toIndexedRowMatrix()
-  println(indexedRowMatrix.toBlockMatrix.toLocalMatrix)
+  println(indexedRowMatrix.toBlockMatrix().toLocalMatrix())
   sc.stop()
 
   }
