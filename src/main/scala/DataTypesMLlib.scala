@@ -239,7 +239,6 @@ def main(args: Array[String]) {
    * can be converted to a RowMatrix by dropping its row indices.
    */
    
-//TODO: Finish section
   val rows1: RDD[IndexedRow] = sc.parallelize(Seq((1,Vectors.dense(0.0,1.0,2.0)))
     .map {case (a,b) => IndexedRow(a,b)})
 
