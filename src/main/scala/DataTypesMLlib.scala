@@ -17,7 +17,7 @@ def main(args: Array[String]) {
 //  .setMaster("local")
     .setMaster("mesos://master.mcbo.mood.com.ve:5050")
     .setAppName("Data Types MLlib")
-    .set("spark.executor.memory", "6g")
+    .set("spark.executor.memory", "10g")
   val sc = new SparkContext(conf)
 
   /** MLlib supports local vectors and matrices stored on a single machine,
